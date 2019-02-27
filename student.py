@@ -1,15 +1,10 @@
 class student():
     #constructors
     def __init__():
-        self.studentID = ""
-
-    def __init__(studentID):
-        self.studentID = studentID
-
-    #getters
-    def getStudentID():
-        return self.studentID
+        return
 
     #methods
-    def takeTest():
-        #put code here
+    def takeTest(testNo):
+        #open the .txt file for the correct test and read the data.
+        return #return the test data to be shown on screen.
+    

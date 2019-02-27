@@ -7,6 +7,8 @@ class test():
     def __init__(self, questions, testResults):
         self.questions = questions
         self.testResults = testResults
+        #create .txt file in the tests folder to store test data
+        #generate a filename that isnt' already being used
 
     #getters
     def getQuestions(self):
@@ -17,4 +19,6 @@ class test():
 
     #methods
     def submit(self):
-        #put code here
+        #put test results in database.csv
+        #open file and write to the end of it
+        return

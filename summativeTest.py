@@ -1,4 +1,5 @@
-import test, datetime
+import datetime
+from test import test
 
 class summativeTest(test):
     #constructors
@@ -19,5 +20,11 @@ class summativeTest(test):
         return resultsDate
 
     #methods
-    def viewResult(self):
-        #put code here
+    def submit(self):
+        #submit data to dabtabse etc etc
+        self.viewResult(test)
+        return
+    
+    def viewResult(self, test):
+        #opens the file for that test and finds your result
+        return #return test result

@@ -1,16 +1,15 @@
 class lecturer():
     #constructors
     def __init__(self):
-        self.lecturerID = ""
-
-    def __init__(self, lecturerID):
-        self.lecturerID = lecturerID
-
-    #getters
-    def getLecturerID(self):
-        return self.lecturerID
+        return
 
     #methods
+    def readDatabase(self):
+        #opens database.csv and returns the data as a list
+        return #return database contents
+    
     def searchDatabase(self):
-        #put code here
+        data = self.readDatabase()
+        #search the data
+        return
     
