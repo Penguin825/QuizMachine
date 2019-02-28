@@ -1,31 +1,19 @@
-import test, formativeTest, summativeTest
-import student, lecturer
-from tkinter import *
-
-class program:
-    #constructors
-    def __init__(self, master):
-        self.master = master
-        master.title("QuizMachine v0.1")
-
-        self.label = Label(master, text="Welcome to the Quiz machine!\nPlease log in:")
-        self.label.pack()
-
-        self.startButton = Button(master, text="Student", command=self.startStudent)
-        self.startButton.pack()
-
-        self.closeButton = Button(master, text="Lecturer", command=self.startLecturer)
-        self.closeButton.pack(side="left")
-
-    #methods
-    def startStudent(self):
-        return
-
-    def startLecturer(self):
-        return
+import tkinter
 
 
-#init
-root = Tk()
-window = program(root)
-root.mainloop()
+def start():
+    window = tkinter.Tk()
+    window.title("Quiz Machine")
+    window.geometry("300x300")
+
+    text = tkinter.Label(window, text="\nWelcome to the Quiz Machine\nPlease sign in:\n")
+    buttonStudent = tkinter.Button(window, text="Student", command=student)
+    buttonLecturer = tkinter.Button(window, text="Lecturer")
+
+    for widget in [text, buttonStudent, buttonLecturer]:
+        widget.pack()
+
+    window.mainloop()
+
+def student():
+    winStudent = tk.Toplevel(window)
