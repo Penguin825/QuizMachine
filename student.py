@@ -1,10 +1,16 @@
 class student():
     #constructors
-    def __init__():
+    def __init__(self):
+        self.name = ""
+        return
+
+    def __init__(self, name):
+        self.name = name
         return
 
     #methods
-    def takeTest(testNo):
+    def takeTest(self, testName):
         #open the .txt file for the correct test and read the data.
+        print(self.name, testName)
         return #return the test data to be shown on screen.
     

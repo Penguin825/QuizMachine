@@ -24,4 +24,4 @@ def main_read():
     # Need this, because program automatically ends in windows, when opened.
     exit = input('Enter anything to end. ')
     if exit in possibleCharacters:
-pass
+        pass

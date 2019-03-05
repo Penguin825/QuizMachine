@@ -1,8 +1,9 @@
+import json
+from os import path.join
+from operator import itemgetter
+from random import shuffle
+
 def main_quiz():
-    import json
-    from os import path.join
-    from operator import itemgetter
-    from random import shuffle
 
     # Prints out questions and options from question sets
     def Def_Question(message, a, b, c, d, correct):
