@@ -8,6 +8,10 @@ class student():
         self.name = name
         return
 
+    #getters
+    def getName():
+        return self.name
+
     #methods
     def takeTest(self, testName):
         #open the .txt file for the correct test and read the data.

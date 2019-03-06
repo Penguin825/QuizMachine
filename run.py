@@ -1,201 +1,136 @@
-import test, formativeTest, summativeTest, student, lecturer
+import test, formativeTest, summativeTest
 import os
+from student import student
+from lecturer import lecturer
 from tkinter import *
 
-class program:
-    #constructors
-    def __init__(self, root):
-        #create startup page
-        self.root = root
-        root.title("Log in")
-        root.geometry("500x300")
+def main(wnd):
+    wnd.title("Log in")
+    wnd.geometry("500x300")
+    widgets = []
+    widgets.append(Label(wnd, text="\nWelcome to the Quiz machine!\nPlease log in:\n"))
+    widgets.append(Button(wnd, text="Student", command=lambda : startStudent(wnd, widgets, username.get())))
+    widgets.append(Button(wnd, text="Lecturer", command=lambda : startLecturer(wnd, widgets, username.get())))
+    username = Entry(wnd)
+    widgets.append(username)
+    show(widgets)
 
-        #page contents
-        self.label = Label(root, text="\nWelcome to the Quiz machine!\nPlease log in:\n")
-        self.label.pack()
 
-        self.stuButton = Button(root, text="Student", command=self.startStudent)
-        self.stuButton.pack()
+def show(widgets):
+    for widget in widgets:
+        widget.pack()
 
-        self.lecButton = Button(root, text="Lecturer", command=self.startLecturer)
-        self.lecButton.pack()
 
-        self.username = Entry(self.root)
-        self.username.pack()
+def remove(widgets):
+    for widget in widgets:
+        widget.destroy()
+    return []
 
-    #methods
-    def startStudent(self):
-        if self.username.get() != "":
-            self.user = student.student(str(self.username.get()))
-        else:
-            return        
-        #create new window
-        self.winStudent = Toplevel(self.root)
-        self.winStudent.title("Logged in as Student")
-        self.winStudent.geometry("500x300")
 
-        #page contents
-        self.label = Label(self.winStudent, text="\nStudent portal\n")
-        self.label.pack()
-
-        self.takeButton = Button(self.winStudent, text="Take a test", command=self.studentTest)
-        self.takeButton.pack()
-
-        self.feedButton = Button(self.winStudent, text="Look at feedback", command=self.studentFeedback)
-        self.feedButton.pack()
-        
-        #close startup page
-        self.root.withdraw()
+def startStudent(wnd, widgets, username):
+    if username != "":
+        user = student(username)
+    else:
         return
+    wnd.title("Logged in as Student")
+    widgets = remove(widgets)
+    widgets.append(Label(wnd, text="\nStudent portal\n"))
+    widgets.append(Button(wnd, text="Take a test", command=lambda : studentTest(wnd, widgets, user)))
+    widgets.append(Button(wnd, text="Look at feedback", command=lambda : studentFeedback(wnd, widgets, user)))
+    show(widgets)
 
 
-    def studentTest(self):
-        self.feedButton.destroy()
-        
-        self.label2 = Label(self.winStudent, text="\nChoose a test:\n")
-        self.label2.pack()
+def studentTest(wnd, widgets, user):
+    wnd.title("Take a test")
+    widgets = remove(widgets)
+    tests = [os.path.splitext(filename)[0] for filename in os.listdir("tests") if os.path.splitext(filename)[1] == ".csv"]
+    var = StringVar(wnd)
+    var.set(tests[0])
+    widgets.append(Label(wnd, text="\nChoose a test:\n"))
+    widgets.append(OptionMenu(wnd, var, *tests))
+    widgets.append(Button(wnd, text="Start Test", command=lambda : user.takeTest(var.get())))
+    show(widgets)
 
-        # Look in the tests folder and create a list of all the filenames
-        tests = [os.path.splitext(filename)[0] for filename in os.listdir("tests") if os.path.splitext(filename)[1] == ".csv"]
 
-        # Create a dropdown menu with the tests in it
-        self.var = StringVar(self.winStudent)
-        self.var.set(tests[0])
+def studentFeedback(wnd, widgets, user):
+    wnd.title("Get feedback")
+    widgets = remove(widgets)
 
-        self.testMenu = OptionMenu(self.winStudent, self.var, *tests)
-        self.testMenu.pack()
 
-        # Create a button that, when clicked, will call student.takeTest and pass the
-        # name of the test as a parameter.
-        startButton = Button(self.winStudent, text="Start test", command=lambda: self.user.takeTest(self.var.get()))
-        startButton.pack()
-        
+def startLecturer(wnd, widgets, username):
+    if username != "":
+        user = lecturer(username)
+    else:
         return
+    wnd.title("Logged in as Lecturer")
+    widgets = remove(widgets)
+    widgets.append(Label(wnd, text="\nLecturer portal\n"))
+    widgets.append(Button(wnd, text="Create a test", command=lambda : lecturerCreate(wnd, widgets, user)))
+    widgets.append(Button(wnd, text="Modify a test", command=lambda : lecturerModify(wnd, widgets, user)))
+    show(widgets)
 
 
-    def studentFeedback(self):
-        return
+def lecturerCreate(wnd, widgets, user):
+    wnd.title("Create a test")
+    widgets = remove(widgets)
+    editors = []
+    widgets.append(Label(wnd, text="\nTest name:"))
+    widgets.append(Entry(wnd))
+    widgets.append(Button(wnd, text="Add a question", command=lambda : editors.append(addQuestion(wnd, widgets))))
+    widgets.append(Button(wnd, text="Create test", command=lambda : createTest(wnd, widgets, editors, user)))
+    show(widgets)
 
 
-    def startLecturer(self):
-        if self.username.get() != "":
-            self.user = lecturer.lecturer(str(self.username.get()))
-        else:
-            return
-        
-        #create new window
-        self.winLecturer = Toplevel(self.root)
-        self.winLecturer.title("Logged in as Lecturer")
-        self.winLecturer.geometry("500x300")
-
-        #page contents
-        self.label = Label(self.winLecturer, text="\nLecturer portal\n")
-        self.label.pack()
-
-        self.createButton = Button(self.winLecturer, text="Create a test", command=self.lecturerCreate)
-        self.createButton.pack()
-
-        self.modifyButton = Button(self.winLecturer, text="Modify a test", command=self.lecturerModify)
-        self.modifyButton.pack()
-        
-        
-        #close startup page
-        self.root.withdraw()
-        return
+def addQuestion(wnd, widgets):
+    editor = questionEditor(wnd)
+    show(editor)
+    return editor
 
 
-    def lecturerCreate(self):
-        self.label.destroy()
-        self.createButton.destroy()
-        self.modifyButton.destroy()
-
-        self.editors = []
-        self.radioVars = []
-
-        #page contents
-        self.testNameLabel = Label(self.winLecturer, text="Test name:")
-        self.testNameLabel.pack()
-
-        self.testNameEntry = Entry(self.winLecturer)
-        self.testNameEntry.pack()
-
-        self.addQuestionButton = Button(self.winLecturer, text="Add a question", command=self.addQuestion)
-        self.addQuestionButton.pack()
-
-        self.createTestButton = Button(self.winLecturer, text="Create test", command=self.createTest)
-        self.createTestButton.pack()
-        return
-
-    def addQuestion(self):
-        self.editors.append(self.questionEditor())
-        for item in self.editors[-1]:
-            item.pack()
-        return
+def questionEditor(wnd):
+    question = []
+    question.append(Label(wnd, text="\nEnter question:"))
+    question.append(Entry(wnd))
+    question.append(Label(wnd, text="Correct answer:"))
+    question.append(Entry(wnd))
+    question.append(Label(wnd, text="Incorrect answers:"))
+    for x in range(3):
+        question.append(Entry(wnd))
+    return question
 
 
-    def questionEditor(self):
-        question = []
-        label = Label(self.winLecturer, text="Enter question:")
-        question.append(label)
+def createTest(wnd, widgets, editors, user):
+    data = [widgets[1].get()]
+    for editor in editors:
+        currentQuestion = []
+        for widget in editor:
+            if type(widget) == Entry:
+                currentQuestion.append(widget.get())
+        data.append(currentQuestion)
+    if user.createTest(data):
+        wnd.title("Test created")
+        widgets = remove(widgets)
+        for editor in editors:
+            remove(editor)
+        widgets.append(Label(wnd, text="\nTest created successfully.\n"))
+        widgets.append(Button(wnd, text="OK", command=lambda : back(wnd, widgets, user)))
+        show(widgets)
+    else:
+        widgets[0]["text"] = "\nA test with that name already exists!"
 
-        questionText = Entry(self.winLecturer)
-        question.append(questionText)
 
-        options = ["A", "B", "C", "D"]
+def back(wnd, widgets, user):
+    if type(user) == student:
+        startStudent(wnd, widgets, user.name)
+    elif type(user) == lecturer:
+        startLecturer(wnd, widgets, user.name)
 
-        for option in options:
-            newLabel = Label(self.winLecturer, text="Option {}".format(option))
-            question.append(newLabel)
 
-            newEntry = Entry(self.winLecturer)
-            question.append(newEntry)
+def lecturerModify():
+    pass
 
-        var = IntVar()
-        self.radioVars.append(var)
-        newLabel2 = Label(self.winLecturer, text="Correct answer:")
-        for option, num in zip(options, range(4)):
-            radioButton = Radiobutton(self.winLecturer, text=option, padx=20, variable=var, value=num)
-            question.append(radioButton)
-            
-        return question
-        
-    def createTest(self):
-        data = [self.testNameEntry.get()]
-        for question, var in zip(self.editors, self.radioVars):
-            currentQuestion = []
-            for widget in question:
-                if type(widget) == Entry:
-                    currentQuestion.append(widget.get())
-                elif type(widget) == Radiobutton:
-                    currentQuestion.append(var.get())
-                    break
-            data.append(currentQuestion)
-        if self.user.createTest(data):
-            self.testNameLabel["text"] = "Test created successfully."
-            self.backButton = Button(self.winLecturer, text="OK", command=self.back)
-            self.backButton.pack()
-            #remove everything from the screen
-            self.testNameEntry.destroy()
-            self.addQuestionButton.destroy()
-            self.createTestButton.destroy()
-            for question in self.editors:
-                for widget in question:
-                    widget.destroy()
-        else:
-            self.testNameLabel["text"] = "A test with that name already exists!"
-            
 
-    def back(self):
-        self.testNameLabel.destroy()
-        self.backButton.destroy()
-        self.winLecturer.destroy()
-        self.startLecturer()
-
-    def lecturerModify(self):
-        #put code here
-        return
-
-#init
-root = Tk()
-window = program(root)
-root.mainloop()
+# Start the program
+wnd = Tk()
+main(wnd)
+wnd.mainloop()

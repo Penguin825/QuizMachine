@@ -36,7 +36,6 @@ class lecturer():
     def createTest(self, data):
         testName = "tests/{}.csv".format(data[0])
         data = data[1:]
-        print(data)
 
         #create test file
         try:
