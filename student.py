@@ -1,3 +1,5 @@
+import csv
+
 class student():
     #constructors
     def __init__(self):
@@ -14,7 +16,19 @@ class student():
 
     #methods
     def takeTest(self, testName):
-        #open the .txt file for the correct test and read the data.
-        print(self.name, testName)
-        return #return the test data to be shown on screen.
-    
+        testName = "tests/{}.csv".format(testName)
+        testData = []
+        with open(testName, "r") as test:
+            reader = csv.reader(test, delimiter=",")
+            for question in reader:
+                testData.append(question)
+        return testData
+
+    def checkAnswers(self, testName, answers):
+        testName = "tests/{}.csv".format(testName)
+        results = []
+        with open(testName, "r") as test:
+            reader = csv.reader(test, delimiter=",")
+            for question, answer in zip(reader, answers):
+                results.append(True if question[1] == answer else False)
+        return results

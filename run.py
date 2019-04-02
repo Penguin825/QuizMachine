@@ -1,5 +1,6 @@
 import test, formativeTest, summativeTest
 import os
+from random import shuffle
 from student import student
 from lecturer import lecturer
 from tkinter import *
@@ -43,12 +44,37 @@ def startStudent(wnd, widgets, username):
 def studentTest(wnd, widgets, user):
     wnd.title("Take a test")
     widgets = remove(widgets)
-    tests = [os.path.splitext(filename)[0] for filename in os.listdir("tests") if os.path.splitext(filename)[1] == ".csv"]
+    tests = [os.path.splitext(filename)[0] for filename in os.listdir("tests") if os.path.splitext(filename)[-1] == ".csv"]
     var = StringVar(wnd)
     var.set(tests[0])
     widgets.append(Label(wnd, text="\nChoose a test:\n"))
     widgets.append(OptionMenu(wnd, var, *tests))
-    widgets.append(Button(wnd, text="Start Test", command=lambda : user.takeTest(var.get())))
+    widgets.append(Button(wnd, text="Start Test", command=lambda : takeTest(wnd, widgets, user, var.get(), user.takeTest(var.get()))))
+    show(widgets)
+
+
+def takeTest(wnd, widgets, user, test, questions):
+    widgets = remove(widgets)
+    variables = []
+    for question in questions:
+        widgets.append(Label(wnd, text=question[0]))
+        question = question[1:]
+        shuffle(question)
+
+        v = StringVar()
+        v.set(question[0])
+        variables.append(v)
+        for answer in question:
+            widgets.append(Radiobutton(wnd, text=answer, variable=v, value=answer))
+    widgets.append(Button(wnd, text="Submit", command=lambda : submitTest(wnd, widgets, user, test, variables, [question[0] for question in questions])))
+    show(widgets)
+
+
+def submitTest(wnd, widgets, user, test, variables, questions):
+    widgets = remove(widgets)
+    answers = [answer.get() for answer in variables]
+    for result, question, answer in zip(user.checkAnswers(test, answers), questions, answers):
+        widgets.append(Label(wnd, text = "{}\n{}\nCorrect\n".format(question, answer) if result else "{}\n{}\nIncorrect\n".format(question, answer)))
     show(widgets)
 
 

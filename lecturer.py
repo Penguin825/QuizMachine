@@ -46,4 +46,3 @@ class lecturer():
                 writer = csv.writer(file)
                 writer.writerows(data)
                 return True
-
