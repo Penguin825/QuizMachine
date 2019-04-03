@@ -152,9 +152,25 @@ def back(wnd, widgets, user):
         startLecturer(wnd, widgets, user.name)
 
 
-def lecturerModify():
-    pass
+def lecturerModify(wnd, widgets, user):
+    wnd.title("Modify a test")
+    widgets = remove(widgets)
+    tests = [os.path.splitext(filename)[0] for filename in os.listdir("tests") if os.path.splitext(filename)[-1] == ".csv"]
+    var = StringVar(wnd)
+    var.set(tests[0])
+    widgets.append(Label(wnd, text="\nChoose a test:\n"))
+    widgets.append(OptionMenu(wnd, var, *tests))
+    widgets.append(Button(wnd, text="Start Test", command=lambda : modify(wnd, widgets, user, var.get(),  user.takeTest(var.get()))))
+    show(widgets)
 
+
+def modify(wnd, widgets, user, test, questions):
+    # get test data
+    widgets = remove(widgets)
+    for question in questions:
+        
+    widgets.append(Button(wnd, text="Submit", command=lambda : fjdlksafjkldsjfklsadj(wnd, widgets, user, test, variables, [question[0] for question in questions])))
+    show(widgets)
 
 # Start the program
 wnd = Tk()
